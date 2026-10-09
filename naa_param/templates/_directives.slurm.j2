@@ -1,0 +1,18 @@
+{# req: this job's scheduler request — see backends/render.py:Directives #}
+#SBATCH --job-name={{ req.job_name }}
+#SBATCH --nodes={{ req.nodes }}
+#SBATCH --ntasks-per-node={{ req.ntasks_per_node }}
+#SBATCH --cpus-per-task={{ req.cpus }}
+#SBATCH --mem={{ req.mem }}
+#SBATCH --time={{ req.time }}
+#SBATCH --output={{ req.out }}
+#SBATCH --error={{ req.err }}
+{% if profile.account %}
+#SBATCH --account={{ profile.account }}
+{% endif %}
+{% if profile.partition %}
+#SBATCH --partition={{ profile.partition }}
+{% endif %}
+{% for directive in profile.extra_directives %}
+#SBATCH {{ directive }}
+{% endfor %}

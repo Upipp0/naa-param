@@ -1,0 +1,38 @@
+naa_param — third-party data notice
+===================================
+
+This package and its repository contain NO third-party force-field data: no
+published residue library, no published parameter set.
+
+Libraries are obtained by the user — from their authors, or from the user's own
+AmberTools installation — and imported with `naa-param import-library`, which
+converts them into the user's own data directory ($NAA_PARAM_LIBRARY_DIR, else
+~/.local/share/naa-param/libraries). The terms under which a library is
+distributed bind the user who obtained it; the importer records the library's
+citation and stated terms, and the SHA-256 of every file it read.
+
+What the package does contain about published libraries is descriptive only:
+for a few of them (naa_param/residues/sources.py, PRESETS), the parent force
+fields they were fitted for, how their protonation states are named, whom to
+cite and where to obtain them. No parameter is part of that description.
+
+The parent force field
+----------------------
+
+naa_param reads the parent force field (e.g. amber99sb-ildn.ff, distributed
+with GROMACS) from the user's installation and writes a modified copy of it; it
+does not ship one.
+
+AmberTools
+----------
+
+No AmberTools source code is included, linked or derived from: this package
+invokes tleap, antechamber, parmchk2, espgen and resp as external programs.
+
+Project data
+------------
+
+naa_param/params/consensus/ holds only data this project derives itself
+(`naa-param calibrate`).
+
+See docs/licences.md for details.

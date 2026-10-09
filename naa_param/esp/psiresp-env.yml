@@ -1,0 +1,26 @@
+# The PsiRESP environment for `esp_engine: psiresp` (docs/guide.md, section 5.1m).
+#
+# Every one of the seven is pinned on purpose. Left to choose, the solver pairs
+# Psi4 1.9.1 with libint 2.13, whose missing libint2.so.2 makes `import psi4`
+# fail; other Python/Psi4 combinations do not resolve at all. PsiRESP is built on
+# pydantic v1 and cannot share naa_param's pydantic v2 environment: the pipeline
+# talks to it through naa_param/esp/psiresp_worker.py, as a separate program.
+#
+#   micromamba create -p psiresp-env -f psiresp-env.yml
+#   export NAA_PARAM_PSIRESP_LAUNCHER="micromamba run -p /path/to/psiresp-env"
+#
+# On a cluster, build a container from this file and point the launcher at it
+# (`apptainer exec --cleanenv image.sif`): a channel that keeps moving is held
+# still only by an image.
+name: psiresp-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - psiresp=0.4.2
+  - psi4=1.9.1
+  - libint=2.8.2
+  - pydantic=1.10.21
+  - qcelemental=0.29.0
+  - qcengine=0.33.0
+  - rdkit=2024.03.6

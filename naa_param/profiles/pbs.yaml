@@ -1,0 +1,37 @@
+# Generic PBS Pro profile — a template to copy, not a real site. Fill it in with:
+#   naa-param add-profile mysite --from pbs --account PROJ --partition myqueue \
+#       --modules g16 amber python --venv "$HOME/naa_param/.venv"
+name: pbs
+scheduler: pbs
+# Your project/account string (PBS `-A`). Some sites want `-P` instead — add it
+# through extra_directives and leave this empty.
+account:
+# The queue (PBS `-q`).
+partition: workq
+nodes: 1
+ntasks_per_node: 1
+cpus: 32
+mem: "360000MB"
+time: "24:00:00"
+rename_cpus: 1
+rename_mem: "4000MB"
+rename_time: "00:30:00"
+gather_cpus: 1
+gather_mem: "8000MB"
+gather_time: "04:00:00"
+# The whole `-l` resource request. This is PBS Pro; a Torque site wants
+# "nodes={nodes}:ppn={cpus}". Placeholders: {nodes}, {cpus}, {mem_mb}.
+select: "select={nodes}:ncpus={cpus}:mem={mem_mb}mb"
+# Site directives with no neutral spelling, one `#PBS ` line each, e.g.
+#   - "-l place=scatter"
+#   - "-W group_list=chem"
+#   - "-m n"              # PBS mails on abort by default; Slurm mails nothing
+extra_directives: []
+scratch_base: "${TMPDIR:-/tmp}"
+env_setup: |
+  # g16 and AmberTools (antechamber/espgen/resp) must be on PATH on the compute
+  # node — load your site's modules here, then activate the environment
+  # `naa-param` is installed in, e.g.:
+  #   module load g16 amber
+  #   . $g16root/g16/bsd/g16.profile
+  #   source /path/to/venv/bin/activate

@@ -1,0 +1,43 @@
+# CINECA cluster profile (Galileo100 / g100_usr_prod).
+name: cineca
+# Your Slurm account — supply it per run with `naa-param setup --account ...`,
+# or bake it into your own copy: `naa-param add-profile mysite --from cineca --account ...`.
+account:
+partition: g100_usr_prod
+nodes: 1
+ntasks_per_node: 1
+cpus: 32
+mem: "360000MB"
+time: "24:00:00"
+rename_cpus: 1
+rename_mem: "4000MB"
+rename_time: "00:30:00"
+scratch_base: "${CINECA_SCRATCH:-${TMPDIR:-/tmp}}"
+env_setup: |
+  module purge
+  module load autoload
+  module load profile/chem-phys
+  module load g16/C.01
+  # Source the Gaussian environment (sets GAUSS_EXEDIR, PATH, ...)
+  . $g16root/g16/bsd/g16.profile
+  module load autoload
+  module load amber
+
+  # No `module load python` here on purpose: `amber` has already brought one in
+  # as a dependency, so a second load fails with "Conflicting python is loaded"
+  # and silently does nothing. The venv below carries its own interpreter.
+  #
+  # And the module's python packages have to be got out of the way. A module
+  # exports PYTHONPATH to advertise what it ships, and python searches
+  # PYTHONPATH *before* an activated virtualenv's site-packages — so amber's
+  # numpy, built for its own interpreter, shadows the venv's and fails to
+  # import under a different one:
+  #
+  #     ImportError: Importing the numpy C-extensions failed
+  #
+  # AmberTools is used through its binaries (antechamber, espgen, resp), never
+  # its python modules, so nothing is lost.
+  unset PYTHONPATH
+
+  # Activate the environment where `naa-param` is installed (EDIT THIS PATH):
+  source "$HOME/naa_param/.venv/bin/activate"

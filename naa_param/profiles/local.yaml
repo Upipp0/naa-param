@@ -1,0 +1,17 @@
+# Minimal profile for a single machine / small local Slurm cluster:
+# no account or partition, modest resources, no module system.
+name: local
+nodes: 1
+ntasks_per_node: 1
+cpus: 8
+mem: "16000MB"
+time: "24:00:00"
+rename_cpus: 1
+rename_mem: "4000MB"
+rename_time: "00:30:00"
+scratch_base: "${TMPDIR:-/tmp}"
+env_setup: |
+  # g16 and AmberTools (antechamber/espgen/resp) must already be on PATH.
+  # Activate the environment where `naa-param` is installed, e.g.:
+  #   source /path/to/venv/bin/activate
+  #   conda activate naa_param

@@ -1,0 +1,41 @@
+# =============================================================================
+# naa_param configuration — one file per non-canonical residue
+# =============================================================================
+# Copy this file to configs/<RESNAME>.yaml and fill in your values.
+
+# ── Required pipeline parameters ─────────────────────────────────────────────
+
+# 3-letter residue code (uppercase)
+res_name: LOH
+
+# Source GROMACS force field directory.
+# A copy named <ffname>_<RESNAME>.ff will be created in out_dir.
+ff_file: /path/to/ff_input/amber99sb-ildn.ff
+
+# PDB of the bare (uncapped) residue — must contain backbone N, CA, C, O atoms
+uncapped_pdb: /path/to/LOH_original.pdb
+
+# Net formal charge of the residue
+charge: 0
+
+# Spin multiplicity (1 = singlet, 2 = doublet, ...)
+multiplicity: 1
+
+# Starting protein PDB — atom names for this residue will be fixed in step 9
+protein_pdb: /path/to/protein.pdb
+
+# Where the geometry the charges are fitted on comes from. mm (the default) is the
+# 1995 protocol the AMBER charges were derived with: MM minimization at the
+# prescribed conformations, one HF/6-31G* ESP each, no quantum optimization.
+# qm is the earlier protocol, one B3LYP/6-31G* optimization of the capped fragment.
+geometry: mm
+
+# Maximum number of optimization cycles for Gaussian B3LYP/6-31G* Opt.
+# geometry: qm only -- under mm there is no optimization, and a value other than
+# the default is refused.
+min_steps: 100
+
+# Root directory for all pipeline outputs.
+# Results land under: <out_dir>/<res_name>/step01/ … step09/
+# Final FF is copied to: <out_dir>/<ffname>_<RESNAME>.ff
+out_dir: /path/to/naa_results

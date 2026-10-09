@@ -1,0 +1,21 @@
+{# req: this job's scheduler request — see backends/render.py:Directives #}
+{# Directive order mirrors _directives.slurm.j2 — name, resources, time, out,   #}
+{# err, account, queue — so the two dialects read as two parallel columns.      #}
+{# Deliberately absent: `-j oe` (Slurm keeps the streams separate too) and `-V` #}
+{# (env_setup is what makes a job self-sufficient; exporting a login shell is   #}
+{# how a stale PYTHONPATH shadows the venv naa-param lives in). Both are        #}
+{# available through extra_directives for sites that need them.                 #}
+#PBS -N {{ req.job_name }}
+#PBS -l {{ req.select }}
+#PBS -l walltime={{ req.time }}
+#PBS -o {{ req.out }}
+#PBS -e {{ req.err }}
+{% if profile.account %}
+#PBS -A {{ profile.account }}
+{% endif %}
+{% if profile.partition %}
+#PBS -q {{ profile.partition }}
+{% endif %}
+{% for directive in profile.extra_directives %}
+#PBS {{ directive }}
+{% endfor %}

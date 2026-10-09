@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "naa-param"
+version = "0.1.0"
+description = "Automated parameterization of non-canonical amino acids (NCAAs) for GROMACS/AMBER molecular dynamics."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = [
+    "computational-chemistry",
+    "molecular-dynamics",
+    "gromacs",
+    "amber",
+    "force-field",
+    "parameterization",
+    "resp",
+    "ncaa",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+dependencies = [
+    "pydantic>=2",
+    "jinja2>=3",
+    "pyyaml",
+    "acpype",
+    "openbabel-wheel",
+    "rdkit>=2023.9",
+    "networkx>=3",
+    # the default protocol's MM geometry stage (`geometry: mm`)
+    "openmm>=8",
+    "parmed>=4",
+]
+
+# The single console command installed by `pip install`. Everything is a
+# subcommand of it; `naa_param.cli` dispatches to the module behind each one.
+[project.scripts]
+naa-param = "naa_param.cli:main"
+
+# The importable package lives in ./naa_param — the distribution is `naa-param`,
+# the import name `naa_param` (hyphens are not legal in Python identifiers).
+[tool.hatch.build.targets.wheel]
+packages = ["naa_param"]
+
+# Ship the Jinja2 templates and cluster profiles (non-.py package data).
+[tool.hatch.build]
+artifacts = [
+    "naa_param/templates/*.j2",
+    "naa_param/profiles/*.yaml",
+    # The parameter-set README. No third-party parameter set ships: users
+    # import their own with `naa-param import-library`.
+    "naa_param/params/*.md",
+    # The pinned PsiRESP environment `esp_engine: psiresp` runs its worker in.
+    "naa_param/esp/*.yml",
+    # Consensus backbone charges derived by `naa-param calibrate --install`.
+    "naa_param/params/consensus/*.json",
+    "naa_param/params/consensus/*.md",
+]
